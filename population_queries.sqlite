@@ -1,0 +1,83 @@
+
+SELECT COUNT(*) AS 'count_african_countries'
+FROM countries
+WHERE continent = 'Africa';
+
+WITH oceania AS(
+  SELECT 
+  countries.name,
+  population_years.year,
+  population_years.population
+FROM population_years
+JOIN countries
+  ON population_years.country_id = countries.id
+  AND countries.continent = 'Oceania'
+  )
+SELECT SUM(population) AS 'Oceania Population 2005'
+FROM oceania
+WHERE year = 2005;
+
+WITH south_america AS(
+  SELECT 
+  countries.name,
+  population_years.year,
+  population_years.population
+FROM population_years
+JOIN countries
+  ON population_years.country_id = countries.id
+  AND countries.continent = 'South America'
+  )
+SELECT Round(AVG(population), 5) AS 'Average Population - South America'
+FROM south_america
+WHERE year = 2003;
+
+WITH matched_countries AS (
+SELECT 
+  countries.name AS 'name',
+  population_years.year AS 'year',
+  population_years.population AS 'population'
+FROM population_years
+JOIN countries 
+  ON population_years.country_id = countries.id)
+SELECT name, MIN(population)
+FROM matched_countries
+WHERE year = 2007;
+
+WITH matched_countries AS (
+SELECT 
+  countries.name AS 'name',
+  population_years.year AS 'year',
+  population_years.population AS 'population'
+FROM population_years
+JOIN countries 
+  ON population_years.country_id = countries.id)
+SELECT ROUND(AVG(population), 5) AS 'Poland Avg Population'
+FROM matched_countries
+WHERE name = 'Poland';
+
+WITH matched_countries AS (
+SELECT 
+  countries.name AS 'name',
+  population_years.year AS 'year',
+  population_years.population AS 'population'
+FROM population_years
+JOIN countries 
+  ON population_years.country_id = countries.id)
+SELECT COUNT(DISTINCT name) AS "Countries with 'the'"
+FROM matched_countries
+WHERE name LIKE '%The%';
+
+WITH matched_countries AS (
+SELECT 
+  countries.name AS 'name',
+  population_years.year AS 'year',
+  population_years.population AS 'population',
+  countries.continent AS 'continent'
+FROM population_years
+JOIN countries 
+  ON population_years.country_id = countries.id)
+SELECT continent, SUM(population)
+FROM matched_countries
+WHERE year = 2010
+GROUP BY continent
+ORDER BY continent ASC;
